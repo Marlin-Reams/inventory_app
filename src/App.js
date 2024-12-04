@@ -1,40 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import InventoryForm from "./components/InventoryForm";
 import InventoryTable from "./components/InventoryTable";
+import { useInventory } from "./hooks/useInventory";
 
 function App() {
-  const [inventory, setInventory] = useState([]);
-  const [isInitialized, setIsInitialized] = useState(false); // Track if data has been loaded
-
-  // Load inventory from localStorage on app initialization
-  useEffect(() => {
-    console.log("Initial Load: Checking localStorage");
-    const savedItems = localStorage.getItem("inventory");
-    if (savedItems) {
-      const parsedItems = JSON.parse(savedItems);
-      console.log("Loaded Items from localStorage:", parsedItems);
-      setInventory(parsedItems);
-    }
-    setIsInitialized(true); // Mark that initialization is complete
-  }, []);
-
-  // Save inventory to localStorage whenever it changes, but only after initial load
-  useEffect(() => {
-    if (isInitialized) {
-      console.log("Saving Inventory to localStorage:", inventory);
-      localStorage.setItem("inventory", JSON.stringify(inventory));
-    }
-  }, [inventory, isInitialized]);
-
-  const addInventoryItem = (item) => {
-    console.log("Adding Item:", item);
-    setInventory((prevInventory) => {
-      const updatedInventory = [...prevInventory, item];
-      console.log("Updated Inventory State:", updatedInventory);
-      return updatedInventory;
-    });
-  };
+  const { inventory, addItem, editItem, deleteItem } = useInventory();
 
   return (
     <Router>
@@ -54,15 +25,21 @@ function App() {
                 <div>
                   <h2>Inventory List</h2>
                   {inventory.length > 0 ? (
-                    <InventoryTable inventory={inventory} />
+                    <InventoryTable
+                      inventory={inventory}
+                      onEditItem={(index) => console.log("Edit:", index)} // Placeholder
+                      onDeleteItem={deleteItem}
+                    />
                   ) : (
                     <p>No items in inventory. Add some to get started!</p>
                   )}
                 </div>
               }
             />
-            <Route path="/add-item" element={<InventoryForm onAddItem={addInventoryItem} />} />
-
+            <Route
+              path="/add-item"
+              element={<InventoryForm onAddItem={addItem} />}
+            />
           </Routes>
         </main>
       </div>

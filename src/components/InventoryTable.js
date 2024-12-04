@@ -1,6 +1,6 @@
 import React from "react";
 
-function InventoryTable({ inventory }) {
+function InventoryTable({ inventory, onEditItem, onDeleteItem }) {
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
       <thead>
@@ -10,6 +10,7 @@ function InventoryTable({ inventory }) {
           <th style={{ border: "1px solid #ddd", padding: "8px" }}>Description</th>
           <th style={{ border: "1px solid #ddd", padding: "8px" }}>Quantity</th>
           <th style={{ border: "1px solid #ddd", padding: "8px" }}>Stock Level</th>
+          <th style={{ border: "1px solid #ddd", padding: "8px" }}>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -20,6 +21,10 @@ function InventoryTable({ inventory }) {
             <td style={{ border: "1px solid #ddd", padding: "8px" }}>{item.description}</td>
             <td style={{ border: "1px solid #ddd", padding: "8px" }}>{item.quantity}</td>
             <td style={{ border: "1px solid #ddd", padding: "8px" }}>{item.stockLevel}</td>
+            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+              <button onClick={() => onEditItem(index)} style={{ marginRight: "5px" }}>Edit</button>
+              <button onClick={() => onDeleteItem(index)}>Delete</button>
+              </td>
           </tr>
         ))}
       </tbody>
