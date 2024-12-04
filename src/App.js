@@ -40,6 +40,16 @@ function App() {
               path="/add-item"
               element={<InventoryForm onAddItem={addItem} />}
             />
+            <Route
+              path="/edit-item/:index"
+              element={
+                <InventoryForm
+                  onAddItem={addItem} // Reuse for adding new items
+                  onEditItem={editItem}
+                  inventory={inventory} // Pass inventory for pre-filling
+                />
+              }
+            />
           </Routes>
         </main>
       </div>
