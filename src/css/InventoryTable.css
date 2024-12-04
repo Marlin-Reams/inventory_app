@@ -1,20 +1,34 @@
-table {
+.inventory-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
   }
   
-  th, td {
+  .inventory-table th,
+  .inventory-table td {
     border: 1px solid #ddd;
     padding: 8px;
   }
   
-  th {
+  .inventory-table th {
     background-color: #f4f4f4;
     text-align: left;
   }
   
-  tr:hover {
+  .inventory-table tr:hover {
     background-color: #f9f9f9;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
   }
   
