@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import InventoryForm from "./components/InventoryForm";
+import InventoryTable from "./components/InventoryTable";
 
 function App() {
   const [inventory, setInventory] = useState([]);
@@ -52,17 +53,16 @@ function App() {
               element={
                 <div>
                   <h2>Inventory List</h2>
-                  <ul>
-                    {inventory.map((item, index) => (
-                      <li key={index}>
-                        {item.articleNumber} - {item.description} (Quantity: {item.quantity}, Stock Level: {item.stockLevel})
-                      </li>
-                    ))}
-                  </ul>
+                  {inventory.length > 0 ? (
+                    <InventoryTable inventory={inventory} />
+                  ) : (
+                    <p>No items in inventory. Add some to get started!</p>
+                  )}
                 </div>
               }
             />
             <Route path="/add-item" element={<InventoryForm onAddItem={addInventoryItem} />} />
+
           </Routes>
         </main>
       </div>
