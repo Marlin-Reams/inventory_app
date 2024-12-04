@@ -1,47 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 
-function InventoryForm({ onAddItem, onEditItem, inventory }) {
-  const { index } = useParams();
-  const navigate = useNavigate();
-
-  // Determine if editing or adding
-  const isEditing = index !== undefined;
-
-  // State to track form fields
+function InventoryForm({ initialData = {}, onSubmit }) {
   const [formData, setFormData] = useState({
     articleNumber: "",
     itemNumber: "",
     description: "",
     quantity: "",
     stockLevel: "",
+    category: "",
+    ...initialData, // Pre-fill form fields with initialData, if provided
   });
 
-  // Pre-fill form if editing
+  // Highlighted change: Update formData when initialData changes
   useEffect(() => {
-    if (isEditing) {
-      const itemToEdit = inventory[parseInt(index)];
-      if (itemToEdit) {
-        setFormData(itemToEdit);
-      }
+    if (initialData) { // Prevent unnecessary updates
+      setFormData((prevData) => ({ ...prevData, ...initialData })); // Update state
     }
-  }, [isEditing, index, inventory]);
+  }, [JSON.stringify(initialData)]); // Serialize object for stable comparison
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isEditing) {
-      onEditItem(parseInt(index), formData);
+    if (typeof onSubmit === "function") {
+      onSubmit(formData);
+      setFormData({
+        articleNumber: "",
+        itemNumber: "",
+        description: "",
+        quantity: "",
+        stockLevel: "",
+        category: "",
+      }); // Reset the form after submission
     } else {
-      onAddItem(formData);
+      console.error("onSubmit is not a function");
     }
-    navigate("/"); // Redirect to home after submission
   };
 
   return (
@@ -101,7 +97,27 @@ function InventoryForm({ onAddItem, onEditItem, inventory }) {
         />
       </label>
       <br />
-      <button type="submit">{isEditing ? "Update Item" : "Add Item"}</button>
+      <label>
+        Category:
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select a category</option>
+          <option value="Tires">Tires</option>
+          <option value="Wiper Blades">Wiper Blades</option>
+          <option value="Oil Filters">Oil Filters</option>
+          <option value="Air Filters">Air Filters</option>
+          <option value="Cabin Air Filters">Cabin Air Filters</option>
+          <option value="Oil Eco Boxes">Oil Eco Boxes</option>
+          <option value="Light Bulbs">Light Bulbs</option>
+          <option value="Consumables">Consumables</option>
+        </select>
+      </label>
+      <br />
+      <button type="submit">Submit</button>
     </form>
   );
 }

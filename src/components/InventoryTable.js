@@ -1,18 +1,11 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useNotification } from "../context/NotificationContext"; // Import NotificationContext
-import "../css/InventoryTable.css";
+import "../css/InventoryTable.css"; // Adjust path as needed
+
+
 
 function InventoryTable({ inventory, onDeleteItem }) {
   const navigate = useNavigate();
-  const { showMessage } = useNotification(); // Access showMessage from context
-
-  const handleDelete = (index) => {
-    const confirmed = window.confirm("Are you sure you want to delete this item?");
-    if (confirmed) {
-      onDeleteItem(index);
-      showMessage("Item deleted successfully!"); // Show success message
-    }
-  };
 
   return (
     <table className="inventory-table">
@@ -35,8 +28,10 @@ function InventoryTable({ inventory, onDeleteItem }) {
             <td>{item.quantity}</td>
             <td>{item.stockLevel}</td>
             <td>
-              <button onClick={() => navigate(`/edit-item/${index}`)}>Edit</button>
-              <button onClick={() => handleDelete(index)}>Delete</button>
+              <button onClick={() => navigate(`/edit-item/${index}`)}>
+                Edit
+              </button>
+              <button onClick={() => onDeleteItem(index)}>Delete</button>
             </td>
           </tr>
         ))}
@@ -46,3 +41,4 @@ function InventoryTable({ inventory, onDeleteItem }) {
 }
 
 export default InventoryTable;
+
