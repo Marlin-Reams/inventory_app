@@ -1,31 +1,34 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import InventoryForm from "../components/InventoryForm";
+import { useParams, useNavigate } from "react-router-dom";
 import { useInventory } from "../context/InventoryContext";
-import { useNotification } from "../context/NotificationContext";
+import InventoryForm from "../components/InventoryForm";
 
 function EditItemPage() {
-  const { index } = useParams(); // Get item index from the URL
-  const { inventory, editItem } = useInventory(); // Access inventory and editItem function
-  const { showMessage } = useNotification(); // Access showMessage for notifications
+  const { index } = useParams(); // Get the item index from the URL
+  const { inventory, editItem } = useInventory(); // Access inventory and edit function
+  const navigate = useNavigate();
 
-  const itemToEdit = inventory[parseInt(index)]; // Get the item to edit
+  // Get the item to edit
+  const itemToEdit = inventory[parseInt(index, 10)];
 
   if (!itemToEdit) {
-    return <p>Item not found!</p>; // Show an error if the item doesn't exist
+    return <p>Item not found!</p>; // Handle invalid index gracefully
   }
 
   const handleEditItem = (updatedItem) => {
-    editItem(parseInt(index), updatedItem); // Update the item in the inventory
-    showMessage("Item updated successfully!"); // Show success message
+    editItem(parseInt(index, 10), updatedItem); // Update the item
+    navigate("/"); // Redirect to homepage after saving
   };
 
   return (
     <div>
       <h2>Edit Item</h2>
-      <InventoryForm initialData={itemToEdit} onSubmit={handleEditItem} /> {/* Pass data to form */}
+      {/* Pass the item to edit and the submit handler to the form */}
+      <InventoryForm initialData={itemToEdit} onSubmit={handleEditItem} />
     </div>
   );
 }
 
 export default EditItemPage;
+
+

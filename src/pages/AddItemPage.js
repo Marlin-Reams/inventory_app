@@ -4,12 +4,21 @@ import { useInventory } from "../context/InventoryContext";
 import { useNotification } from "../context/NotificationContext";
 
 function AddItemPage() {
-  const { addItem } = useInventory(); // Access the addItem function from context
+  const { inventory, addItem } = useInventory(); // Access inventory and addItem
   const { showMessage } = useNotification(); // Access notification system
 
-  const handleAddItem = (item) => {
-    addItem(item); // Add item to inventory
-    showMessage("Item added successfully!"); // Notify the user
+  const handleAddItem = (newItem) => {
+    // Check for duplicate article numbers
+    const isDuplicate = inventory.some(
+      (item) => item.articleNumber === newItem.articleNumber
+    );
+
+    if (isDuplicate) {
+      showMessage("Error: Article number already exists!"); // Notify user
+    } else {
+      addItem(newItem); // Add the new item to inventory
+      showMessage("Item added successfully!");
+    }
   };
 
   return (
@@ -21,4 +30,5 @@ function AddItemPage() {
 }
 
 export default AddItemPage;
+
 

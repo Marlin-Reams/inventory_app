@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useInventory } from "../context/InventoryContext";
+import { useNotification } from "../context/NotificationContext";
 
-function InventoryForm({ initialData = {}, onSubmit }) {
+function InventoryForm({ onSubmit, initialData }) {
+  const { categories, addCategory } = useInventory();
+  const { showMessage } = useNotification();
+
+  // State for the form fields
   const [formData, setFormData] = useState({
     articleNumber: "",
     itemNumber: "",
@@ -8,36 +14,52 @@ function InventoryForm({ initialData = {}, onSubmit }) {
     quantity: "",
     stockLevel: "",
     category: "",
-    ...initialData, // Pre-fill form fields with initialData, if provided
   });
 
-  // Highlighted change: Update formData when initialData changes
+  // State for adding new categories
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
+
+  // Prepopulate form data if initialData is provided
   useEffect(() => {
-    if (initialData) { // Prevent unnecessary updates
-      setFormData((prevData) => ({ ...prevData, ...initialData })); // Update state
+    if (initialData) {
+      setFormData(initialData);
     }
-  }, [JSON.stringify(initialData)]); // Serialize object for stable comparison
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleCategorySubmit = () => {
+    if (!newCategory.trim()) {
+      showMessage("Category cannot be empty!", { type: "error" });
+      return;
+    }
+    if (categories.includes(newCategory)) {
+      showMessage("Category already exists!", { type: "error" });
+      return;
+    }
+    addCategory(newCategory);
+    setFormData((prevData) => ({ ...prevData, category: newCategory }));
+    setNewCategory("");
+    setShowAddCategory(false);
+    showMessage("Category added successfully!", { type: "success" });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (typeof onSubmit === "function") {
-      onSubmit(formData);
-      setFormData({
-        articleNumber: "",
-        itemNumber: "",
-        description: "",
-        quantity: "",
-        stockLevel: "",
-        category: "",
-      }); // Reset the form after submission
-    } else {
-      console.error("onSubmit is not a function");
-    }
+    onSubmit(formData);
+    setFormData({
+      articleNumber: "",
+      itemNumber: "",
+      description: "",
+      quantity: "",
+      stockLevel: "",
+      category: "",
+    });
+    showMessage("Item saved successfully!", { type: "success" });
   };
 
   return (
@@ -106,18 +128,39 @@ function InventoryForm({ initialData = {}, onSubmit }) {
           required
         >
           <option value="">Select a category</option>
-          <option value="Tires">Tires</option>
-          <option value="Wiper Blades">Wiper Blades</option>
-          <option value="Oil Filters">Oil Filters</option>
-          <option value="Air Filters">Air Filters</option>
-          <option value="Cabin Air Filters">Cabin Air Filters</option>
-          <option value="Oil Eco Boxes">Oil Eco Boxes</option>
-          <option value="Light Bulbs">Light Bulbs</option>
-          <option value="Consumables">Consumables</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
+        <button
+          type="button"
+          onClick={() => setShowAddCategory(!showAddCategory)}
+          style={{ marginLeft: "10px", padding: "5px 10px", cursor: "pointer" }}
+        >
+          +
+        </button>
       </label>
+      {showAddCategory && (
+        <div style={{ marginTop: "10px" }}>
+          <input
+            type="text"
+            placeholder="New Category"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleCategorySubmit}
+            style={{ marginLeft: "5px" }}
+          >
+            Add
+          </button>
+        </div>
+      )}
       <br />
-      <button type="submit">Submit</button>
+      <button type="submit">Save Item</button>
     </form>
   );
 }
