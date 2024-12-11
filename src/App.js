@@ -13,7 +13,6 @@ function App() {
       <NotificationProvider>
         <Router>
           <Notification />
-          {/* Navigation bar */}
           <header style={{ textAlign: "center", marginBottom: "20px" }}>
             <h1>Inventory Management</h1>
             <nav>
@@ -24,7 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/add-item" element={<AddItemPage />} />
-            <Route path="/edit-item/:index" element={<EditItemPage />} />
+            <Route path="/edit-item/:id" element={<EditItemPage />} />
           </Routes>
         </Router>
       </NotificationProvider>
@@ -33,6 +32,8 @@ function App() {
 }
 
 export default App;
+
+
 
 
 

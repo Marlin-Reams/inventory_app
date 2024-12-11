@@ -1,70 +1,119 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { loadInventory, saveInventory } from "../utils/localStorage";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const InventoryContext = createContext();
 
+
 export function InventoryProvider({ children }) {
   const [inventory, setInventory] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]); // State for categories
 
-  // Load inventory and categories from localStorage
+  const inventoryCollectionRef = collection(db, "inventory");
+
+  // Load inventory and categories from Firestore
   useEffect(() => {
-    const initialInventory = loadInventory();
-    console.log("Initial inventory loaded:", initialInventory);
+    const fetchInventory = async () => {
+      const data = await getDocs(inventoryCollectionRef);
+      const items = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setInventory(items);
 
-    // Only set inventory if it's empty (to avoid overwrites)
-    if (initialInventory.length > 0) {
-      setInventory(initialInventory);
-      const initialCategories = Array.from(new Set(initialInventory.map((item) => item.category))).sort();
-      setCategories(initialCategories);
+      // Extract unique categories
+      const uniqueCategories = Array.from(new Set(items.map((item) => item.category))).sort();
+      setCategories(uniqueCategories);
+    };
+    fetchInventory();
+  }, []);
+
+// Add an item to Firestore
+const addItem = async (item) => {
+  try {
+    console.log("here we are")
+    console.log("Attempting to add item:", item);
+
+    // Check for duplicate article numbers
+    const isDuplicate = inventory.some(
+      (existingItem) =>
+        existingItem.articleNumber.trim().toLowerCase() ===
+        item.articleNumber.trim().toLowerCase()
+    );
+
+    if (isDuplicate) {
+      console.warn("Duplicate article number detected:", item.articleNumber);
+      console.log("this is where we are")
+      throw new Error("Article number already exists!");
+      
     }
-  }, []); // Run only once on mount
 
-  // Save inventory to localStorage whenever it changes
-  useEffect(() => {
-    if (inventory.length > 0) {
-      console.log("Saving inventory to localStorage:", inventory);
-      saveInventory(inventory);
-    }
-  }, [inventory]); // Save whenever `inventory` changes
+    // Add the item to Firestore
+    const docRef = await addDoc(inventoryCollectionRef, item);
+    console.log("Item successfully added with ID:", docRef.id);
 
-  // Add an item to the inventory
-  const addItem = (item) => {
-    console.log("Adding item:", item);
-    setInventory((prev) => [...prev, item]);
+    // Update inventory state
+    setInventory((prev) => [...prev, { ...item, id: docRef.id }]);
+
+    // Add the category if it's new
     if (!categories.includes(item.category)) {
+      console.log("Adding new category:", item.category);
       setCategories((prev) => [...prev, item.category]);
     }
-  };
+  } catch (error) {
+    console.error("Error adding item:", error.message || error);
+    throw error; // Re-throw the error to handle it in the UI
+  }
+};
 
-  // Edit an item in the inventory
-  const editItem = (index, updatedItem) => {
-    console.log(`Editing item at index ${index}:`, updatedItem);
-    setInventory((prev) =>
-      prev.map((item, i) => (i === index ? updatedItem : item))
+
+// Edit an item in Firestore
+const editItem = async (id, updatedItem) => {
+  try {
+    // Check for duplicate article numbers (excluding the current item being edited)
+    const isDuplicate = inventory.some(
+      (existingItem) =>
+        existingItem.articleNumber.trim().toLowerCase() ===
+          updatedItem.articleNumber.trim().toLowerCase() &&
+        existingItem.id !== id // Exclude the current item being edited
     );
+
+    if (isDuplicate) {
+      throw new Error("Article number already exists!");
+    }
+
+    const itemDoc = doc(db, "inventory", id);
+    await updateDoc(itemDoc, updatedItem);
+    setInventory((prev) =>
+      prev.map((item) => (item.id === id ? { ...updatedItem, id } : item))
+    );
+  } catch (error) {
+    console.error("Error updating item:", error.message || error);
+    throw error; // Re-throw the error to handle it in the UI
+  }
+};
+
+
+  // Delete an item from Firestore
+  const deleteItem = async (id) => {
+    try {
+      console.log("Attempting to delete item with ID:", id);
+      const docRef = doc(db, "inventory", id);
+      await deleteDoc(docRef);
+      console.log("Item deleted successfully");
+
+      // Update state to remove the item
+      setInventory((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
-  // Delete an item from the inventory
- // Delete an item from the inventory
-const deleteItem = (index) => {
-    setInventory((prev) => {
-      const updatedInventory = prev.filter((_, i) => i !== index);
-      console.log("Updated inventory after deletion:", updatedInventory);
-  
-      // Update categories based on the new inventory
-      const updatedCategories = Array.from(new Set(updatedInventory.map((item) => item.category)));
-      setCategories(updatedCategories);
-  
-      // Persist the updated inventory to localStorage immediately
-      saveInventory(updatedInventory);
-  
-      return updatedInventory;
-    });
-  };
-  
-
-  // Add a new category directly
+  // Add a new category
   const addCategory = (newCategory) => {
     if (!categories.includes(newCategory)) {
       setCategories((prev) => [...prev, newCategory]);
@@ -73,7 +122,14 @@ const deleteItem = (index) => {
 
   return (
     <InventoryContext.Provider
-      value={{ inventory, addItem, editItem, deleteItem, categories, addCategory }}
+      value={{
+        inventory,
+        categories,
+        addItem,
+        editItem,
+        deleteItem,
+        addCategory,
+      }}
     >
       {children}
     </InventoryContext.Provider>
@@ -83,7 +139,4 @@ const deleteItem = (index) => {
 export function useInventory() {
   return useContext(InventoryContext);
 }
-
-
-
 

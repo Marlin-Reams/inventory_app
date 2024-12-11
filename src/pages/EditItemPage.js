@@ -1,34 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useInventory } from "../context/InventoryContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 import InventoryForm from "../components/InventoryForm";
+import { useInventory } from "../context/InventoryContext";
+import { useNotification } from "../context/NotificationContext";
 
 function EditItemPage() {
-  const { index } = useParams(); // Get the item index from the URL
-  const { inventory, editItem } = useInventory(); // Access inventory and edit function
+  const { id } = useParams();
+  const { editItem } = useInventory();
+  const { showMessage } = useNotification();
+  const [itemToEdit, setItemToEdit] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Get the item to edit
-  const itemToEdit = inventory[parseInt(index, 10)];
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        if (!id) {
+          console.error("Error: ID is undefined");
+          setLoading(false);
+          return;
+        }
+        const itemDoc = doc(db, "inventory", id);
+        const docSnap = await getDoc(itemDoc);
+        if (docSnap.exists()) {
+          setItemToEdit({ ...docSnap.data(), id: docSnap.id });
+        } else {
+          console.error("No such document exists!");
+        }
+      } catch (error) {
+        console.error("Error fetching item:", error);
+        showMessage("Error fetching item data.", { type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItem();
+  }, [id, showMessage]);
 
-  if (!itemToEdit) {
-    return <p>Item not found!</p>; // Handle invalid index gracefully
+  const handleEditItem = async (updatedItem) => {
+    try {
+      await editItem(id, updatedItem);
+      showMessage("Item updated successfully!", { type: "success" });
+      navigate("/");
+    } catch (error) {
+      console.error("Error updating item:", error);
+      showMessage("Error updating item. Please try again.", { type: "error" });
+    }
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
   }
 
-  const handleEditItem = (updatedItem) => {
-    editItem(parseInt(index, 10), updatedItem); // Update the item
-    navigate("/"); // Redirect to homepage after saving
-  };
+  if (!itemToEdit) {
+    return <p>Error: Item not found.</p>;
+  }
 
   return (
     <div>
       <h2>Edit Item</h2>
-      {/* Pass the item to edit and the submit handler to the form */}
       <InventoryForm initialData={itemToEdit} onSubmit={handleEditItem} />
     </div>
   );
 }
 
 export default EditItemPage;
+
+
+
 
 

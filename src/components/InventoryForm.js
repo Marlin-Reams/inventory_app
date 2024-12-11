@@ -3,10 +3,9 @@ import { useInventory } from "../context/InventoryContext";
 import { useNotification } from "../context/NotificationContext";
 
 function InventoryForm({ onSubmit, initialData }) {
-  const { categories, addCategory } = useInventory();
+  const { categories = [], addCategory } = useInventory(); // Default to an empty array
   const { showMessage } = useNotification();
 
-  // State for the form fields
   const [formData, setFormData] = useState({
     articleNumber: "",
     itemNumber: "",
@@ -16,16 +15,18 @@ function InventoryForm({ onSubmit, initialData }) {
     category: "",
   });
 
-  // State for adding new categories
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
 
-  // Prepopulate form data if initialData is provided
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    console.log("Categories in InventoryForm:", categories); // Debugging log
+  }, [categories]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,7 +51,7 @@ function InventoryForm({ onSubmit, initialData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData); // Let the parent handle success/error messages
     setFormData({
       articleNumber: "",
       itemNumber: "",
@@ -59,8 +60,8 @@ function InventoryForm({ onSubmit, initialData }) {
       stockLevel: "",
       category: "",
     });
-    showMessage("Item saved successfully!", { type: "success" });
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -119,6 +120,7 @@ function InventoryForm({ onSubmit, initialData }) {
         />
       </label>
       <br />
+  
       <label>
         Category:
         <select
@@ -128,7 +130,7 @@ function InventoryForm({ onSubmit, initialData }) {
           required
         >
           <option value="">Select a category</option>
-          {categories.map((category) => (
+          {(categories || []).map((category) => (
             <option key={category} value={category}>
               {category}
             </option>
