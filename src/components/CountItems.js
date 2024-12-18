@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function CountItems({ items, onSubmitCount, onComplete }) {
+function CountItems({ items, onSubmitCount }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [count, setCount] = useState("");
 
@@ -8,26 +8,22 @@ function CountItems({ items, onSubmitCount, onComplete }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (count.trim() === "" || isNaN(count) || parseInt(count, 10) < 0) {
       alert("Please enter a valid count.");
       return;
     }
 
-    // Convert count to a number
+    // Convert count to a number and submit it
     const countValue = parseInt(count, 10);
-
-    // Submit the current count
     onSubmitCount(currentItem.articleNumber, countValue);
 
-    // Move to the next item or complete
+    // Move to the next item or reset for the next
     if (currentIndex < items.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setCount(""); // Reset count for the next item
-      console.log("Submitting count:", { articleNumber: currentItem.articleNumber, count: countValue });
-
     } else {
-      onComplete(); // Notify completion
+      // No more items left to count
+      alert("Counting complete! Check the summary below.");
     }
   };
 
@@ -65,7 +61,6 @@ function CountItems({ items, onSubmitCount, onComplete }) {
 }
 
 export default CountItems;
-
 
 
 

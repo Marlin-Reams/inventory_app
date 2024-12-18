@@ -7,8 +7,8 @@ import HomePage from "./pages/HomePage.js";
 import AddItemPage from "./pages/AddItemPage";
 import EditItemPage from "./pages/EditItemPage";
 import CountItems from "./components/CountItems.js";
-import CountSummary from "./pages/CountSummary";
 import CountPage from "./pages/CountPage.js";
+import CountHistory from "./pages/CountHistory.js";
 
 function App() {
   return (
@@ -22,6 +22,8 @@ function App() {
               <Link to="/" style={{ margin: "0 10px" }}>Home</Link>
               <Link to="/add-item" style={{ margin: "0 10px" }}>Add Item</Link>
               <Link to="/count" style={{ margin: "0 10px" }}>Count Inventory</Link>
+              <Link to="/count-history" style={{ margin: "0 10px" }}>Count History</Link>
+
             </nav>
           </header>
           <Routes>
@@ -30,7 +32,8 @@ function App() {
             <Route path="/edit-item/:id" element={<EditItemPage />} />
             <Route path="/count" element={<CountPage />} />
             <Route path="/count-items/:category/:sortingOrder" element={<CountItems />} />
-            <Route path="/count-summary" element={<CountSummary />} />
+            <Route path="/count-history" element={<CountHistory />} />
+            
           </Routes>
         </Router>
       </NotificationProvider>
