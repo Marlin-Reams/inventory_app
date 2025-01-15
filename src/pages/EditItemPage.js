@@ -43,7 +43,7 @@ function EditItemPage() {
     try {
       await editItem(id, updatedItem);
       showMessage("Item updated successfully!", { type: "success" });
-      navigate("/");
+      navigate(`/category/${updatedItem.category}`); // Redirect to the item's category page
     } catch (error) {
       console.error("Error updating item:", error);
       showMessage("Error updating item. Please try again.", { type: "error" });
