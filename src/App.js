@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import { InventoryProvider } from "./context/InventoryContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import Notification from "./components/Notification";
@@ -23,17 +23,29 @@ function App() {
               <Link to="/add-item" style={{ margin: "0 10px" }}>Add Item</Link>
               <Link to="/count" style={{ margin: "0 10px" }}>Count Inventory</Link>
               <Link to="/count-history" style={{ margin: "0 10px" }}>Count History</Link>
-
             </nav>
           </header>
           <Routes>
+            {/* Home Page */}
             <Route path="/" element={<HomePage />} />
+
+            {/* Add Item Page */}
             <Route path="/add-item" element={<AddItemPage />} />
+
+            {/* Edit Item Page */}
             <Route path="/edit-item/:id" element={<EditItemPage />} />
+
+            {/* Count Inventory Page */}
             <Route path="/count" element={<CountPage />} />
-            <Route path="/count-items/:category/:sortingOrder" element={<CountItems />} />
+
+            {/* Count History Page */}
             <Route path="/count-history" element={<CountHistory />} />
-            
+
+            {/* Category-Based Navigation */}
+            <Route path="/category/:categoryName" element={<HomePage />} />
+
+            {/* Catch-All Route */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
       </NotificationProvider>
