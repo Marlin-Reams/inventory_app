@@ -9,6 +9,7 @@ import EditItemPage from "./pages/EditItemPage";
 import CountItems from "./components/CountItems.js";
 import CountPage from "./pages/CountPage.js";
 import CountHistory from "./pages/CountHistory.js";
+import ChangeOrderPage from "./pages/ChangeOrderPage.js";
 
 function App() {
   return (
@@ -43,6 +44,9 @@ function App() {
 
             {/* Category-Based Navigation */}
             <Route path="/category/:categoryName" element={<HomePage />} />
+
+            {/* Change Item Count Order */}
+            <Route path="/change-order" element={<ChangeOrderPage />} />
 
             {/* Catch-All Route */}
             <Route path="*" element={<Navigate to="/" />} />
