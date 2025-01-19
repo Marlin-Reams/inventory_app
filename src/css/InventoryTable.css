@@ -1,4 +1,4 @@
-.inventory-table {
+/* .inventory-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -31,4 +31,48 @@
   button:hover {
     background-color: #0056b3;
   }
-  
+   */
+
+   .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.inventory-table th,
+.inventory-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.inventory-table th {
+    background-color: #ff0000; /* Firestone red */
+    color: white; /* White text for contrast */
+    text-align: left;
+}
+
+.inventory-table tr:hover {
+    background-color: #ffe6e6; /* Light red for hover effect */
+}
+
+button {
+    background-color: #ff0000; /* Firestone red */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 3px; /* Slight rounding for modern look */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth interaction */
+}
+
+button:hover {
+    background-color: #cc0000; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slight enlargement on hover */
+}
+
+/* Add spacing between table rows for clarity */
+.inventory-table tr {
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
