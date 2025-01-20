@@ -4,6 +4,7 @@ import { doc, updateDoc, addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 function CountPage() {
   const { inventory, categories, customOrder } = useInventory(); // Added customOrder from context
@@ -15,6 +16,7 @@ function CountPage() {
   const [countingStarted, setCountingStarted] = useState(false);
   const [finalizeCounting, setFinalizeCounting] = useState(false);
   const [filteredInventory, setFilteredInventory] = useState([]);
+  const navigate = useNavigate(); // Add navigate hook
 
   useEffect(() => {
     if (selectedCategory) {
@@ -284,6 +286,13 @@ function CountPage() {
           <button onClick={handleStartCounting} style={{ marginTop: "20px" }}>
             Start Counting
           </button>
+          <button
+        onClick={() => navigate(`/change-order`)}
+        style={{ marginTop: "20px" }}
+        // Ensure a category is selected before navigation
+      >
+        Manage Order
+      </button>
         </div>
       ) : finalizeCounting ? (
         renderFinalizeSection()
