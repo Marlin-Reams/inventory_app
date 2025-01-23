@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import InventoryTable from "../components/InventoryTable";
 import "../css/HomePage.css";
 
+
 function HomePage() {
   const { inventory, deleteItem } = useInventory();
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +26,7 @@ function HomePage() {
         item.itemNumber.toLowerCase().includes(searchQuery) ||
         item.description.toLowerCase().includes(searchQuery))
   );
+  
 
   return (
     <div>
