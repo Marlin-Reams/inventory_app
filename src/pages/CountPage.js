@@ -5,6 +5,7 @@ import { db } from "../firebase/firebase";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
+import "../css/CountPage.css"; 
 
 function CountPage() {
   const { inventory, categories, customOrder } = useInventory(); // Added customOrder from context
@@ -20,23 +21,33 @@ function CountPage() {
 
   useEffect(() => {
     if (selectedCategory) {
+      // ✅ Convert both values to lowercase for case-insensitive comparison
       const itemsInCategory = inventory.filter(
-        (item) => item.category === selectedCategory
+        (item) => item.category.toLowerCase() === selectedCategory.toLowerCase()
       );
-
-      // Apply custom order if available
+  
+      console.log("Filtered Items for Category:", selectedCategory, itemsInCategory); // ✅ Debugging
+  
+      // ✅ Ensure new items are included in the order list
       if (customOrder[selectedCategory]?.length > 0) {
-        const orderedItems = customOrder[selectedCategory].map((id) =>
-          itemsInCategory.find((item) => item.id === id)
+        const orderedItems = customOrder[selectedCategory]
+          .map((id) => itemsInCategory.find((item) => item.id === id))
+          .filter(Boolean); // Remove null values
+  
+        // ✅ Include missing items that are not in custom order
+        const missingItems = itemsInCategory.filter(
+          (item) => !customOrder[selectedCategory].includes(item.id)
         );
-        setFilteredInventory(orderedItems.filter(Boolean)); // Filter out null/undefined items
+  
+        setFilteredInventory([...orderedItems, ...missingItems]);
       } else {
         setFilteredInventory(itemsInCategory);
       }
     } else {
       setFilteredInventory([]); // Clear inventory if no category is selected
     }
-  }, [inventory, selectedCategory, customOrder]); // Update when inventory, category, or custom order changes
+  }, [inventory, selectedCategory, customOrder]); 
+  
 
   const handleStartCounting = () => {
     if (!selectedCategory) {
@@ -263,14 +274,14 @@ function CountPage() {
   };
 
   return (
-    <div>
+    <div className="count-container">
       {!countingStarted && !finalizeCounting ? (
-        <div>
+        <div className="count-form">
           <h2>Select Category to Start Counting</h2>
           <label>
-            Category:
+            
             <select
-              value={selectedCategory}
+              value={selectedCategory} 
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{ marginLeft: "10px" }}
             >
@@ -283,16 +294,19 @@ function CountPage() {
             </select>
           </label>
           <br />
-          <button onClick={handleStartCounting} style={{ marginTop: "20px" }}>
-            Start Counting
-          </button>
-          <button
-        onClick={() => navigate(`/change-order`)}
-        style={{ marginTop: "20px" }}
-        // Ensure a category is selected before navigation
-      >
-        Manage Order
-      </button>
+          <div className="button-group">
+  <button onClick={handleStartCounting} className="start-button">
+    Start Counting
+  </button>
+
+  <button
+    onClick={() => navigate(`/change-order`)}
+    className="manage-order-button"
+  >
+    Manage Order
+  </button>
+</div>
+
         </div>
       ) : finalizeCounting ? (
         renderFinalizeSection()

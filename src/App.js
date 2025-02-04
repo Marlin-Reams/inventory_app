@@ -1,65 +1,4 @@
-// import React from "react";
-// import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
-// import { InventoryProvider } from "./context/InventoryContext";
-// import { NotificationProvider } from "./context/NotificationContext";
-// import Notification from "./components/Notification";
-// import LoginPage from "./pages/LoginPage.js";
-// import HomePage from "./pages/HomePage.js";
-// import AddItemPage from "./pages/AddItemPage";
-// import EditItemPage from "./pages/EditItemPage";
-// import CountItems from "./components/CountItems.js";
-// import CountPage from "./pages/CountPage.js";
-// import CountHistory from "./pages/CountHistory.js";
-// import ChangeOrderPage from "./pages/ChangeOrderPage.js";
-
-// function App() {
-//   return (
-//     <InventoryProvider>
-//       <NotificationProvider>
-//         <Router>
-//           <Notification />
-//           <header style={{ textAlign: "center", marginBottom: "20px" }}>
-//             <h1>Inventory Management</h1>
-//             <nav>
-//               <Link to="/" style={{ margin: "0 10px" }}>Home</Link>
-//               <Link to="/add-item" style={{ margin: "0 10px" }}>Add Item</Link>
-//               <Link to="/count" style={{ margin: "0 10px" }}>Count Inventory</Link>
-//               <Link to="/count-history" style={{ margin: "0 10px" }}>Count History</Link>
-//             </nav>
-//           </header>
-//           <Routes>
-//             {/* Home Page */}
-//             <Route path="/" element={<HomePage />} />
-
-//             {/* Add Item Page */}
-//             <Route path="/add-item" element={<AddItemPage />} />
-
-//             {/* Edit Item Page */}
-//             <Route path="/edit-item/:id" element={<EditItemPage />} />
-
-//             {/* Count Inventory Page */}
-//             <Route path="/count" element={<CountPage />} />
-
-//             {/* Count History Page */}
-//             <Route path="/count-history" element={<CountHistory />} />
-
-//             {/* Category-Based Navigation */}
-//             <Route path="/category/:categoryName" element={<HomePage />} />
-
-//             {/* Change Item Count Order */}
-//             <Route path="/change-order" element={<ChangeOrderPage />} />
-
-//             {/* Catch-All Route */}
-//             <Route path="*" element={<Navigate to="/" />} />
-//           </Routes>
-//         </Router>
-//       </NotificationProvider>
-//     </InventoryProvider>
-//   );
-// }
-
-// export default App;
-
+import "./css/App.css"; // Ensure this is correctly imported
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -139,32 +78,25 @@ function App() {
         <InventoryProvider>
             <NotificationProvider>
                 <Notification />
-                <header style={{ textAlign: "center", marginBottom: "20px" }}>
-                    <h1>Inventory Management</h1>
-                    {isAuthenticated && (
-                        <nav>
-                            <Link to="/">Home</Link>
-                            <Link to="/add-item">Add Item</Link>
-                            <Link to="/count">Count Inventory</Link>
-                            <Link to="/count-history">Count History</Link>
-                            {isAdmin && <Link to="/admin">Admin</Link>} {/* Admin Link */}
-                            <button
-                                onClick={handleSignOut}
-                                style={{
-                                    marginLeft: "10px",
-                                    padding: "5px 10px",
-                                    borderRadius: "4px",
-                                    backgroundColor: "#dc3545",
-                                    color: "#fff",
-                                    border: "none",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Sign Out
-                            </button>
-                        </nav>
-                    )}
-                </header>
+                <header className="navbar">
+  <h1 style={{ color: "white" }}>Inventory Management</h1>
+  
+  <nav className="nav-links">
+    <Link to="/">Home</Link>
+    <Link to="/add-item">Add Item</Link>
+    <Link to="/count">Count Inventory</Link>
+    <Link to="/count-history">Count History</Link>
+    {isAdmin && <Link to="/admin">Admin</Link>}
+  </nav>
+
+  {/* Move Sign Out Button to the Right */}
+  {isAuthenticated && (
+    <button onClick={handleSignOut} className="sign-out-btn">
+      Sign Out
+    </button>
+  )}
+</header>
+
                 <Routes>
                     <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminPage /> : <Navigate to="/login" />} />
                     <Route path="/login" element={<LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />} />

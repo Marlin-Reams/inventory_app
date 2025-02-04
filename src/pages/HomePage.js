@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import InventoryTable from "../components/InventoryTable";
 import "../css/HomePage.css";
 
-
 function HomePage() {
   const { inventory, deleteItem } = useInventory();
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,7 +12,6 @@ function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set category from URL or default to empty for "All Categories"
     setSelectedCategory(categoryName || "");
   }, [categoryName]);
 
@@ -26,54 +24,60 @@ function HomePage() {
         item.itemNumber.toLowerCase().includes(searchQuery) ||
         item.description.toLowerCase().includes(searchQuery))
   );
-  
 
   return (
     <div>
       <h2>Inventory Management</h2>
-      <div style={{ marginBottom: "20px" }}>
-        {/* Category Selector */}
-        <select
-          value={selectedCategory}
-          onChange={(e) => {
-            const newCategory = e.target.value;
-            setSelectedCategory(newCategory);
-            if (newCategory) {
-              navigate(`/category/${newCategory}`); // Navigate to category page
-            } else {
-              navigate("/"); // Navigate to homepage
-            }
-          }}
-          style={{ padding: "8px", marginRight: "10px" }}
-        >
-          <option value="">All Categories</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-        {/* Search Bar */}
-        <input
-          type="text"
-          placeholder="Search inventory..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-          style={{ padding: "8px", width: "200px" }}
-        />
+
+      {/* Sticky Search and Category Filter */}
+      <div className="filter-container">
+        <div className="filter-section">
+          <label>Category: </label>
+          <select
+            value={selectedCategory}
+            onChange={(e) => {
+              const newCategory = e.target.value;
+              setSelectedCategory(newCategory);
+              navigate(newCategory ? `/category/${newCategory}` : "/");
+            }}
+          >
+            <option value="">All Categories</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-section">
+          <label>Search: </label>
+          <input
+            type="text"
+            placeholder="Search inventory..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="clear-btn">✖</button>
+          )}
+        </div>
       </div>
-      {/* Conditionally Render Inventory Table */}
+
+      {/* Inventory Table */}
       {selectedCategory || searchQuery ? (
         filteredInventory.length > 0 ? (
-          <InventoryTable
-            inventory={filteredInventory}
-            onDeleteItem={(id) => {
-              if (window.confirm("Are you sure you want to delete this item?")) {
-                deleteItem(id); 
-              }
-            }}
-            onEditItem={(id) => navigate(`/edit-item/${id}`)}
-          />
+          <div className="table-wrapper">
+            <InventoryTable
+              inventory={filteredInventory}
+              onDeleteItem={(id) => {
+                if (window.confirm("Are you sure you want to delete this item?")) {
+                  deleteItem(id); 
+                }
+              }}
+              onEditItem={(id) => navigate(`/edit-item/${id}`)}
+            />
+          </div>
         ) : (
           <p>No items found. Try adjusting your filters or search query.</p>
         )
@@ -85,6 +89,8 @@ function HomePage() {
 }
 
 export default HomePage;
+
+
 
 
 

@@ -158,9 +158,34 @@ export function InventoryProvider({ children }) {
   const [inventory, setInventory] = useState([]);
   const [categories, setCategories] = useState([]);
   const [customOrder, setCustomOrder] = useState([]);
-
   const inventoryCollectionRef = collection(db, "inventory");
   const customOrderDocRef = doc(db, "customOrders", "countOrder");
+
+  const fetchInventory = async () => {
+    try {
+      console.log("Fetching latest inventory from Firestore...");
+      const data = await getDocs(inventoryCollectionRef);
+      const items = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  
+      console.log("Fetched Inventory Items:", items); // ✅ Debugging
+  
+      setInventory(items);
+  
+      // Update categories dynamically
+      const uniqueCategories = Array.from(new Set(items.map((item) => item.category))).sort();
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+    }
+  };
+
+  // ✅ Load inventory on mount
+  useEffect(() => {
+    fetchInventory();
+  }, []);
+
+
+  
 
   // Load inventory, categories, and custom order from Firestore
   useEffect(() => {
@@ -194,6 +219,7 @@ export function InventoryProvider({ children }) {
           existingItem.articleNumber.trim().toLowerCase() ===
           item.articleNumber.trim().toLowerCase()
       );
+      
 
       if (isDuplicate) {
         throw new Error("Article number already exists!");
@@ -271,6 +297,7 @@ export function InventoryProvider({ children }) {
         inventory,
         categories,
         customOrder,
+        fetchInventory,
         addItem,
         editItem,
         deleteItem,

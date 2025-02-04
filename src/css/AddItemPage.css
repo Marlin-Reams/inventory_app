@@ -1,0 +1,60 @@
+/* Container for the form */
+.add-item-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* Card-style form container */
+  .form-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style Form Labels */
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  /* Style Inputs */
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out;
+  }
+  
+  /* Focus effect */
+  input:focus, select:focus {
+    border-color: #ff0000; /* Firestone Red */
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.5);
+  }
+  
+  /* Submit Button */
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #ff0000; /* Firestone Red */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  /* Button Hover */
+  button[type="submit"]:hover {
+    background: #b30000;
+  }
+  

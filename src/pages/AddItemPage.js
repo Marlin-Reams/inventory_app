@@ -2,6 +2,7 @@ import React from "react";
 import InventoryForm from "../components/InventoryForm";
 import { useInventory } from "../context/InventoryContext";
 import { useNotification } from "../context/NotificationContext";
+import "../css/AddItemPage.css"; 
 
 function AddItemPage() {
   const { inventory, addItem } = useInventory(); // Access inventory and addItem

@@ -3,28 +3,48 @@ import { useInventory } from "../context/InventoryContext";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function ChangeOrderPage() {
-  const { inventory, categories, customOrder, updateCustomOrder } = useInventory();
+  const { inventory, categories, fetchInventory, customOrder, updateCustomOrder } = useInventory();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [orderList, setOrderList] = useState([]);
 
   useEffect(() => {
     if (selectedCategory) {
-      const itemsInCategory = inventory.filter(
-        (item) => item.category === selectedCategory
-      );
+      console.log("Fetching inventory for category:", selectedCategory);
+      fetchInventory(); // ✅ Check if this logs
+    }
+  }, [selectedCategory]);
 
+  useEffect(() => {
+    if (selectedCategory) {
+      const itemsInCategory = inventory.filter(
+        (item) => item.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+  
+      console.log("Filtered Items for Category:", selectedCategory, itemsInCategory); // ✅ Debugging
+  
       if (customOrder[selectedCategory]?.length > 0) {
-        // Sort items based on the custom order
-        const orderedItems = customOrder[selectedCategory].map((id) =>
-          itemsInCategory.find((item) => item.id === id)
+        console.log("Custom Order for Category:", customOrder[selectedCategory]); // ✅ Debugging
+        const orderedItems = customOrder[selectedCategory]
+          .map((id) => itemsInCategory.find((item) => item.id === id))
+          .filter(Boolean); // Remove null values
+  
+        console.log("Ordered Items Before Filter:", orderedItems); // ✅ Debugging
+  
+        // ✅ Ensure new items that aren't in custom order appear
+        const missingItems = itemsInCategory.filter(
+          (item) => !customOrder[selectedCategory].includes(item.id)
         );
-        setOrderList(orderedItems.filter(Boolean)); // Filter out null/undefined items
+  
+        console.log("Missing Items Not in Custom Order:", missingItems); // ✅ Debugging
+        setOrderList([...orderedItems, ...missingItems]);
       } else {
-        // Default order
         setOrderList(itemsInCategory);
       }
+    } else {
+      setOrderList([]); // Clear list if no category is selected
     }
   }, [inventory, selectedCategory, customOrder]);
+  
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -89,7 +109,7 @@ function ChangeOrderPage() {
                             ...provided.draggableProps.style,
                           }}
                         >
-                          {item.description} - {item.category}
+                          {item.itemNumber} - {item.category}
                         </li>
                       )}
                     </Draggable>

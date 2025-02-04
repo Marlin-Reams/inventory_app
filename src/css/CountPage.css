@@ -1,0 +1,112 @@
+/* Center everything in the container */
+.count-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Add spacing between title and form */
+  .count-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #101820; /* Firestone Black */
+  }
+  
+  /* Center the category label and select dropdown */
+  .count-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+/* Center the category label */
+.count-form label {
+    font-size: 0.9rem; /* Slightly smaller text */
+    font-weight: bold;
+    color: #101820; /* Firestone Black */
+  }
+  
+  /* Style the dropdown */
+  select {
+    width: 95%; /* Slightly wider */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out;
+    text-align: left; /* Left-align text inside */
+    padding-left: 10px; /* Indent text slightly */
+  }
+  
+  /* Focus effect */
+  select:focus {
+    border-color: #ff0000;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.5);
+  }
+  
+  
+  /* Focus effect */
+  select:focus {
+    border-color: #ff0000;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.5);
+  }
+  
+  /* Center and space out buttons */
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Style for both buttons */
+  .start-button,
+  .manage-order-button {
+    width: 90%; /* Make buttons wider */
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+  }
+  
+  /* Firestone Red - Start Counting Button */
+  .start-button {
+    background: #ff0000;
+    color: white;
+  }
+  
+  .start-button:hover {
+    background: #b30000;
+    transform: translateY(-2px);
+  }
+  
+  /* Firestone Black - Manage Order Button */
+  .manage-order-button {
+    background: #101820;
+    color: white;
+  }
+  
+  .manage-order-button:hover {
+    background: #333;
+    transform: translateY(-2px);
+  }
+  
+  
+  
+  
+  

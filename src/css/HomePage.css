@@ -1,66 +1,52 @@
-/* General body styling */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    color: #333;
+.filter-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    height: 100vh;
-}
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filter-section select, .filter-section input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .clear-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .clear-btn:hover {
+    background: darkred;
+  }
+  
+  .table-wrapper {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
 
-/* Container styling */
-.home-container {
+  h2 {
+    color: black;
     text-align: center;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    max-width: 500px;
-    width: 90%;
-}
-
-/* Heading styling */
-.home-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-/* Button styling */
-.home-container .category-button {
-    display: inline-block;
-    margin: 10px;
-    padding: 15px 30px;
-    font-size: 16px;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-}
-
-.home-container .category-button:hover {
-    background-color: #0056b3;
-}
-
-.home-container .add-category-button {
-    display: block;
-    margin: 20px auto 0;
-    padding: 10px 20px;
-    font-size: 14px;
-    color: white;
-    background-color: #28a745;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.home-container .add-category-button:hover {
-    background-color: #218838;
-}
+    width: 100%;
+    margin-top: 20px;
+  }
+  
