@@ -179,7 +179,7 @@ function CountPage() {
           Counting Item {currentIndex + 1} of {filteredInventory.length}
         </h3>
         <p>Article Number: {currentItem.articleNumber}</p>
-        <p>Description: {currentItem.description}</p>
+        <p>Description: {currentItem.itemNumber}</p>
         <p>Stock Level: {currentItem.stockLevel}</p>
 
         <form onSubmit={handleSubmitCount}>
